@@ -1,4 +1,12 @@
 \newcommand{\todo}[1]{\todo[color=blue!30]{TODO: #1}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Colors
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{codegreen}{rgb}{0,0.6,0}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %	Math formatting
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -50,17 +58,14 @@
 \newcommand{\term}[0]{\ensuremath{{\Downarrow}}\xspace}
 
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%	Math environments
+%	Trace Symbols
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\newcommand*{\QEDA}{\hfill\ensuremath{\blacksquare}}%
-
-\AtEndEnvironment{problem}{\null\hfill\QEDA}
-\AtEndEnvironment{example}{}%\null\hfill$\boxdot$}
-%\AtEndEnvironment{proof}{\null\hfill\qed}
-
-\Crefname{lstlisting}{Listing}{Listings}
-\Crefname{problem}{Problem}{Problems}
-
-\Crefname{equation}{Rule}{Rules}
+\newcommand{\mycode}[1]{\texttt{#1}}
+\newcommand{\tracecat}{\ensuremath{\bullet}}
+\newcommand{\abs}[1]{\ensuremath{|#1|}}
+\newcommand{\directprod}{\ensuremath{~\&~}}
+\newcommand{\coherent}[1]{\ensuremath{-_{#1}}}
+\newcommand{\unit}{\mycode{unit}}

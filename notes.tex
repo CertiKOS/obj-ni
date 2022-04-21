@@ -9,6 +9,9 @@
 
 \setcopyright{none}
 
+\usepackage{listings}
+\usepackage{xcolor}
+\input{macros}
 
 %%
 %% end of the preamble, start of the body of the document source.
@@ -40,6 +43,93 @@
 \maketitle
 
 \section{Introduction}
+
+
+\section{Definitions}
+
+\begin{definition}[Principals]
+Confidentiality principals  $\bot$ and $\top$ are  the least and most privileged principals, respectively.
+\end{definition}
+
+Let O be some class defined as:
+\begin{lstlisting}[language=C++, commentstyle=\color{codegreen}, keywordstyle=\color{magenta}]
+  class O {
+    //State
+    field f1;  
+    field f2;  
+
+    //M: list of methods
+    R1  m1(A1); 
+    R2  m2(A2);
+    ...
+    Rn  mn(An);
+    
+  }
+\end{lstlisting}
+
+\begin{definition}[Signature of a Object]
+\[
+O = \{ m_1: \vec{A_1} \to R_1 \dots  m_n: \vec{A_n} \to R_n \}
+\]
+\end{definition}
+
+\begin{definition}[Coherent Space]
+  Coherent space generated from signature $O$ is defined as
+  \begin{itemize}
+  \item $\abs{O} = \{ m_i(\vec{v}).v' | \forall i. \vec{v} \in \vec{A_i}, v' \in B_i  \}$
+    \item $ m_i(\vec{v_i}).v'_i \coherent{O} m_j(\vec{v_j}).v'_j$ \isdef $m_i(\vec{v_i}) = m_j(\vec{v_j}) \implies v'_i = v'_j $
+  \end{itemize}
+  
+\end{definition}
+
+
+\begin{definition}[Object Space]
+\dots
+\end{definition}
+
+\begin{definition}[Direct Product]
+\dots
+
+\end{definition}
+
+
+\begin{definition}[Trace]
+\dots
+
+\end{definition}
+
+
+\begin{definition}[Projection]
+\dots
+
+\end{definition}
+
+
+Let $L$ and $H$ represent the partitioning of the methods such that $M = L \uplus H$. Intuitively, if $M = \{ l_1 \dots l_i, h_1, \dots h_j \}$,  $L = \{ l_1 \dots l_i\}$ and $H = \{ h_1 \dots h_j \}$ then an attacker representing public confidentiality level ($\bot$) can  invoke only methods from $L$ whereas a privileged principal ($\top$) can invoke either methods from either $L$ or $H$. 
+
+\begin{example}
+  Let $O$ be some database object with the signature:
+  \begin{align*}
+    O = & \{ \\
+    & \text{getSalary}: \mycode{id} \to \mycode{int}, \\
+    & \text{putSalary}: \mycode{id} \times \mycode{int} \to \unit \\
+    & \text{avgSalary}: \unit \to \mycode{int} \\
+    & \}
+  \end{align*}
+  Then $L = \{ \text{avgSalary} \}$ and $H = \{\text{getSalary}, \text{putSalary} \}$. Intuitively, the  attacker (with confidentiality level $\bot$) can  invoke  methods from $L$ but not from $H$.
+  \end{example}
+
+\begin{definition}[Noninterference for a single object]
+  Given a prefix-closed clique $V \in \dagger(L \directprod H)$, we say $L$ is non-interfering with respect to $H$ if:
+  \[
+  \forall t_1, t_2 \in V. t_1 \downharpoonright_L = t_2 \downharpoonright_L \implies \forall e \in \abs{V}. t_1 \tracecat e \in V \iff t_2 \tracecat e \in V
+  \]
+\end{definition}
+
+
+
+
+
 %%
 %% The next two lines define the bibliography style to be used, and
 %% the bibliography file.
