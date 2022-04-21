@@ -1,0 +1,66 @@
+\newcommand{\todo}[1]{\todo[color=blue!30]{TODO: #1}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Math formatting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\mi}[1]{\ensuremath{\mathit{#1}}}
+\newcommand{\mr}[1]{\ensuremath{\mathrm{#1}}}
+\newcommand{\mt}[1]{\ensuremath{\texttt{#1}}}
+\newcommand{\mtt}[1]{\ensuremath{\mathtt{#1}}}
+\newcommand{\mf}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\mk}[1]{\ensuremath{\mathfrak{#1}}}
+\newcommand{\mc}[1]{\ensuremath{\mathcal{#1}}}
+\newcommand{\ms}[1]{\ensuremath{\mathsf{#1}}}
+\newcommand{\mb}[1]{\ensuremath{\mathbb{#1}}}
+\newcommand{\msc}[1]{\ensuremath{\mathscr{#1}}}
+
+\newcommand{\isdef}[0]{\ensuremath{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily def}}}{=}}}}
+
+\newcommand{\lift}[1]{\ensuremath{\lceil#1\rceil}}
+
+% http://tex.stackexchange.com/questions/5502/how-to-get-a-mid-binary-relation-that-grows
+\newcommand{\relmiddle}[1]{\mathrel{}\middle#1\mathrel{}}
+
+\DeclareMathOperator\mydefsym{\ensuremath{\iangleq}}
+\newcommand\bnfdef{\ensuremath{\mathrel{::=}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Math shortcuts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\OB}[1]{\ensuremath{\overline{#1}}}
+\newcommand{\llb}{\llbracket}
+\newcommand{\rrb}{\rrbracket}
+\newcommand{\lla}{\mathopen{\ll}}
+\newcommand{\rra}{\mathclose{\gg}}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\Ra}{\Rightarrow}
+\newcommand{\la}{\leftarrow}
+\newcommand{\La}{\Leftarrow}
+\newcommand{\Da}[1]{\ensuremath{\Downarrow^{#1}}}
+\newcommand{\Ua}[1]{\ensuremath{\Downarrow^{#1}}}
+
+\newcommand{\myset}[2]{\ensuremath{\left\{#1 ~\relmiddle|~ #2\right\}}}
+\newcommand{\partof}[1]{\ensuremath{\mc{P}(#1)}}
+
+\newcommand{\compstatus}[0]{\ensuremath{\mc{CS}}}
+\newcommand{\compending}[0]{\ensuremath{\mc{CE}}}
+
+\newcommand{\divr}[0]{\ensuremath{\Uparrow}\xspace}
+
+\newcommand{\term}[0]{\ensuremath{{\Downarrow}}\xspace}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	Math environments
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand*{\QEDA}{\hfill\ensuremath{\blacksquare}}%
+
+\AtEndEnvironment{problem}{\null\hfill\QEDA}
+\AtEndEnvironment{example}{}%\null\hfill$\boxdot$}
+%\AtEndEnvironment{proof}{\null\hfill\qed}
+
+\Crefname{lstlisting}{Listing}{Listings}
+\Crefname{problem}{Problem}{Problems}
+
+\Crefname{equation}{Rule}{Rules}
