@@ -11,6 +11,7 @@
 
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{cmll}
 \input{macros}
 
 %%
@@ -107,7 +108,7 @@ O = \{ m_1: \vec{A_1} \to R_1 \dots  m_n: \vec{A_n} \to R_n \}
 
 Let $L$ and $H$ represent the partitioning of the methods such that $M = L \uplus H$. Intuitively, if $M = \{ l_1 \dots l_i, h_1, \dots h_j \}$,  $L = \{ l_1 \dots l_i\}$ and $H = \{ h_1 \dots h_j \}$ then an attacker representing public confidentiality level ($\bot$) can  invoke only methods from $L$ whereas a privileged principal ($\top$) can invoke either methods from either $L$ or $H$. 
 
-\begin{example}
+\begin{example} \label{ex1}
   Let $O$ be some database object with the signature:
   \begin{align*}
     O = & \{ \\
@@ -119,13 +120,31 @@ Let $L$ and $H$ represent the partitioning of the methods such that $M = L \uplu
   Then $L = \{ \text{avgSalary} \}$ and $H = \{\text{getSalary}, \text{putSalary} \}$. Intuitively, the  attacker (with confidentiality level $\bot$) can  invoke  methods from $L$ but not from $H$.
   \end{example}
 
-\begin{definition}[Noninterference for a single object]
-  Given a prefix-closed clique $V \in \dagger(L \directprod H)$, we say $L$ is non-interfering with respect to $H$ if:
+\begin{definition}[Noninterference for a single object]\label{def:ni}
+  Given a prefix-closed clique $V \in \dagger(L \directprod H)$, we say $L$ does not depend on (or non-interfering with respect to) $H$ if:
   \[
-  \forall t_1, t_2 \in V. t_1 \downharpoonright_L = t_2 \downharpoonright_L \implies \forall e \in \abs{V}. t_1 \tracecat e \in V \iff t_2 \tracecat e \in V
+  \forall t_1, t_2 \in V. t_1\downharpoonright_L = t_2\downharpoonright_L \implies \forall e \in \abs{V}. t_1 \tracecat e \in V \iff t_2 \tracecat e \in V
   \]
 \end{definition}
 
+
+However, it is not clear if Definition \ref{def:ni} can  admit  relaxed noninterference in a meaningful way.
+Consider Example~\ref{ex1}.
+
+\begin{enumerate}
+
+\item Let $t_1 = \text{putSalary}(1, 5000).()$ and  $t_2 = \text{putSalary}(2, 5000).()$.
+Then $t_1\downharpoonright_L = t_2\downharpoonright_L$. The only interesting case is when $e = \text{avgSalary}().5000$.
+Here we have that $t_1 \tracecat e \in V \iff t_2 \tracecat e \in V$.
+
+\item
+However,  if $t_1 = \text{putSalary}().5000$ and  $t_2 = \text{putSalary}().6000$ and $e = \text{avgSalary}().5000$, then we have that $t_1 \tracecat e \in V \not \implies t_2 \tracecat e \in V$, a contradiction.
+Thus, $L$ does depend on $H$.
+
+\item
+A slightly different case,  if $t_1 = \text{avgSalary}().5000$ and  $t_2 = \text{avgSalary}().6000$, then $t_1\downharpoonright_L \ne t_2\downharpoonright_L$. Definition~\ref{def:ni} does not consider this case.
+
+\end{enumerate}
 
 
 
