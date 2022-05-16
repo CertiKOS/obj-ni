@@ -1,4 +1,4 @@
-\newcommand{\todo}[1]{\todo[color=blue!30]{TODO: #1}}
+\newcommand{\mytodo}[1]{\textcolor{red}{#1}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -56,7 +56,8 @@
 \newcommand{\divr}[0]{\ensuremath{\Uparrow}\xspace}
 
 \newcommand{\term}[0]{\ensuremath{{\Downarrow}}\xspace}
-
+\newcommand{\func}[3]{\ensuremath{#1 : #2 \to #3 }}
+\newcommand{\funcdef}[2]{\ensuremath{#1 (#2) = }}
 
 
 
@@ -69,3 +70,10 @@
 \newcommand{\directprod}{\ensuremath{~\&~}}
 \newcommand{\coherent}[1]{\ensuremath{\coh_{#1}}}
 \newcommand{\unit}{\mycode{unit}}
+\newcommand{\obsymbol}{\ensuremath{\mathbb{O}\xspace}}
+\newcommand{\ob}[3]{\ensuremath{\obsymbol_{#2}(#1)}}
+\newcommand{\treq}[4]{#1 \approx^{#4}_{#3} #2}
+\newcommand{\classpart}{\ensuremath{\mathcal{M}}}
+\newcommand{\emptytr}{\ensuremath{\epsilon}}
+\newcommand{\obsim}{\ensuremath{\approx}\xspace}
+\newcommand{\true}{\ensuremath{\mathbb{T}}}

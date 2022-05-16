@@ -12,6 +12,7 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{cmll}
+\usepackage{xspace}
 \input{macros}
 
 %%
@@ -108,44 +109,122 @@ O = \{ m_1: \vec{A_1} \to R_1 \dots  m_n: \vec{A_n} \to R_n \}
 
 Let $L$ and $H$ represent the partitioning of the methods such that $M = L \uplus H$. Intuitively, if $M = \{ l_1 \dots l_i, h_1, \dots h_j \}$,  $L = \{ l_1 \dots l_i\}$ and $H = \{ h_1 \dots h_j \}$ then an attacker representing public confidentiality level ($\bot$) can  invoke only methods from $L$ whereas a privileged principal ($\top$) can invoke either methods from either $L$ or $H$. 
 
+
+\begin{definition}[Pure Noninterference for a single object]\label{def:pureni}
+  Given a prefix-closed clique $V \in \dagger(L \directprod H)$, we say $L$ does not depend on (or non-interfering with respect to) $H$ if:
+  \[
+  \forall t_1, t_2 \in V. t_1 \downharpoonright L =  t_2 \downharpoonright L \implies \forall e \in \abs{L}. t_1  \tracecat e \in V \iff t_2 \tracecat e \in V
+  \]
+\end{definition}
+
+However, Definition \ref{def:pureni} does not  admit  relaxed noninterference.
+Consider the below Example~\ref{ex1} where \mycode{avgSalary}  simply returns the average of all salaried employees. Note that this is a declassification event as the result is a function of secret information.
+
+
 \begin{example} \label{ex1}
   Let $O$ be some database object with the signature:
   \begin{align*}
     O = & \{ \\
-    & \text{getSalary}: \mycode{id} \to \mycode{int}, \\
-    & \text{putSalary}: \mycode{id} \times \mycode{int} \to \unit \\
-    & \text{avgSalary}: \unit \to \mycode{int} \\
+    & \mycode{int} \mycode{ employees[]} \\
+    \\
+    & \mycode{val } \mycode{getSalary}: \mycode{id} \to \mycode{int} \\
+    & \funcdef{\mycode{getSalary}}{\mycode{id}} \\
+    & \qquad \qquad \{ \mycode{return employees[id]} \} \\
+    \\
+    & \mycode{val } \mycode{putSalary}: \mycode{id} \times \mycode{int} \to \unit \\
+    & \funcdef{\mycode{putSalary}}{ \mycode{id, sal}} \\
+    & \qquad \qquad   \{ \mycode{employees[id]} = \mycode{sal}  \} \\
+    \\
+    & \mycode{val } \mycode{avgSalary}: \unit \to \mycode{int} \\
+    & \funcdef{\mycode{avgSalary}}{\unit} \\
+    & \qquad \qquad \{ \mycode{return sum(employees)} \} \\
     & \}
   \end{align*}
-  Then $L = \{ \text{avgSalary} \}$ and $H = \{\text{getSalary}, \text{putSalary} \}$. Intuitively, the  attacker (with confidentiality level $\bot$) can  invoke  methods from $L$ but not from $H$.
+  Suppose $L = \{ \text{avgSalary} \}$ and $H = \{\text{getSalary}, \text{putSalary} \}$. Intuitively, the  attacker (with confidentiality level $\bot$) can  invoke  methods from $L$ but not from $H$.
   \end{example}
 
-\begin{definition}[Noninterference for a single object]\label{def:ni}
+\begin{enumerate}
+
+%% \item \textbf{[Basic Case:]} Let $t_1 = \text{putSalary}(1, 5000).()$ and  $t_2 = \text{putSalary}(2, 5000).()$.
+%% Then $t_1\downharpoonright_L = t_2\downharpoonright_L$. The only interesting case is when $e = \text{avgSalary}().5000$.
+%% Here we have that $t_1 \tracecat e \in V \iff t_2 \tracecat e \in V$.
+
+\item \textbf{[Declassification Event:]}
+If $t_1 = \mycode{putSalary}().5000$ and  $t_2 = \mycode{putSalary}().6000$ and $e = \mycode{avgSalary}().5000$, then $t_1\downharpoonright_L = t_2\downharpoonright_L$ but  $t_1 \tracecat e \in V \not \Rightarrow t_2 \tracecat e \in V$. Thus, as per the definition, $L$ depends on $H$ or $L$ is interfering with $H$ (due to declassification).
+
+\item \textbf{[Inadmissible by Definition~\ref{def:pureni}:]}
+A slightly different case,  if $t_1 = \mycode{avgSalary}().5000$ and  $t_2 = \mycode{avgSalary}().6000$, then $t_1\downharpoonright_L \ne t_2\downharpoonright_L$. Definition~\ref{def:pureni} does not consider this case.
+
+\end{enumerate}
+
+We relax Definition \ref{def:pureni} to include observational equivalence  than strict equality of public events.
+We also introduce a new partition class $D$, to represent methods that declassify information. Thus, $L$, $D$ and $H$ represent the partitioning of the methods such that $\classpart = L \uplus D \uplus H$.
+Note that with this partitioning, the $\bot$ attacker can invoke methods from both $L$ and $D$ but not from $H$.
+
+Given a class definition \classpart, define \emph{trace equivalence} of traces $t_1$ and $t_2$ with respect to a principal $\ell$ as follows:
+\[
+\treq{t_1}{t_2}{\ell}{\classpart} \isdef \ob{t_1}{\classpart}{\ell} \obsim \ob{t_2}{\classpart}{\ell}
+\]
+Trace equivalence captures the  observational equivalence using the \emph{observation function}, \func{\obsymbol_{\classpart}}{E \times P}{E}, a function from the set of events and  principals to the set of events.
+The function is parameterized by security specification of the class that describes the input/output security levels of the methods belonging to the class \classpart.
+The observation function is lifted to traces in a straightforward manner.
+
+
+The observation function is quite expressive: it could even specify declassification events as shown in the example below.
+
+\begin{example}[Simple Observation Function]
+  Let $O$ be the class from Example \ref{ex1} such that  $L = \emptyset $, $D = \{ \mycode{avgSalary} \}$ and $H = \{\mycode{getSalary}, \mycode{putSalary} \}$.
+  Note that \mycode{avgSalary} is a declassification event since there is a flow of information from 
+  \[
+  \ob{e}{O}{L} \isdef \begin{cases}
+    e \mbox{ if } e \in \classpart.L \\
+    1 \mbox{ if } e \in \classpart.D \\
+    \emptytr \mbox{ if } e \in \classpart.H
+  \end{cases}
+  \]
+  The function overwrites the output of $e$ with $1$ making it effectively a constant function.
+\end{example}
+
+The relation, \obsim, between two observations is user defined. If \obsim is strict equality then it is  restrictive. However, one could use other notions of similarity to permit information downgrading.
+
+\begin{example}[Simple Observational Equivalence]
+  \[
+  \ob{e_1}{\classpart}{L} \obsim \ob{e_2}{\classpart}{L} \isdef \begin{cases}
+    \ob{e_1}{\classpart}{L} = \ob{e_2}{\classpart}{L} &\mbox{ if } e_1, e_2 \in \classpart.L \\
+    \emptytr &\mbox{ o.w }
+  \end{cases}
+  \]
+  That is, it ignores the declassified and high events. For example, using the above definition, we have $\ob{\mycode{putSalary}().5000}{\classpart}{L} \obsim \ob{\mycode{putSalary}().6000}{\classpart}{L}$.
+\end{example}
+
+\begin{example}[Complex Observational Equivalence]
+  \[
+  \ob{e_1}{\classpart}{L} \obsim \ob{e_2}{\classpart}{L} \isdef \begin{cases}
+    \ob{e_1}{\classpart}{L} = \ob{e_2}{\classpart}{L} &\mbox{ if } e_1, e_2 \in \classpart.L \\
+    \ob{e_1}{\classpart}{L} = \ob{e_2}{\classpart}{L} &\mbox{ if } e_1, e_2 \in \classpart.D \text{ and} \\
+     &\mbox{ } \exists i \in \{1, 2\}, \ob{e_i}{\classpart}{L} < 10K \\
+    \true &\mbox{ o.w }
+  \end{cases}
+  \]
+  That is, it ignores the declassified events only if the average salary is greater than 10K, otherwise the declassified events have to be exactly the same in both the events.
+  For example, using the above definition, we have $\ob{\mycode{putSalary}().5000}{\classpart}{L} \not \obsim \ob{\mycode{putSalary}().6000}{\classpart}{L}$ since the results are different and less than 10K.
+\end{example}
+
+
+\begin{definition}[Relaxed Noninterference for a single object]\label{def:relaxni}
   Given a prefix-closed clique $V \in \dagger(L \directprod H)$, we say $L$ does not depend on (or non-interfering with respect to) $H$ if:
   \[
-  \forall t_1, t_2 \in V. t_1\downharpoonright_L = t_2\downharpoonright_L \implies \forall e \in \abs{V}. t_1 \tracecat e \in V \iff t_2 \tracecat e \in V
+  \forall t_1, t_2 \in V. \treq{t_1}{t_2}{\ell}{\classpart}  \implies \forall e \in \abs{L}. t_1  \tracecat e \in V \iff t_2 \tracecat e \in V
   \]
 \end{definition}
 
 
-However, it is not clear if Definition \ref{def:ni} can  admit  relaxed noninterference in a meaningful way.
-Consider Example~\ref{ex1}.
 
-\begin{enumerate}
+\begin{definition}[Noninterference for multiple objects]\label{def:ni2}
 
-\item Let $t_1 = \text{putSalary}(1, 5000).()$ and  $t_2 = \text{putSalary}(2, 5000).()$.
-Then $t_1\downharpoonright_L = t_2\downharpoonright_L$. The only interesting case is when $e = \text{avgSalary}().5000$.
-Here we have that $t_1 \tracecat e \in V \iff t_2 \tracecat e \in V$.
-
-\item
-However,  if $t_1 = \text{putSalary}().5000$ and  $t_2 = \text{putSalary}().6000$ and $e = \text{avgSalary}().5000$, then we have that $t_1 \tracecat e \in V \not \implies t_2 \tracecat e \in V$, a contradiction.
-Thus, $L$ does depend on $H$.
-
-\item
-A slightly different case,  if $t_1 = \text{avgSalary}().5000$ and  $t_2 = \text{avgSalary}().6000$, then $t_1\downharpoonright_L \ne t_2\downharpoonright_L$. Definition~\ref{def:ni} does not consider this case.
-
-\end{enumerate}
-
+  \mytodo{\dots}
+  
+\end{definition}
 
 
 
