@@ -5,6 +5,8 @@
 %	Colors
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \definecolor{codegreen}{rgb}{0,0.6,0}
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -72,8 +74,9 @@
 \newcommand{\unit}{\mycode{unit}}
 \newcommand{\obsymbol}{\ensuremath{\mathbb{O}\xspace}}
 \newcommand{\ob}[3]{\ensuremath{\obsymbol_{#2}(#1)}}
-\newcommand{\treq}[4]{#1 \approx^{#4}_{#3} #2}
-\newcommand{\classpart}{\ensuremath{\mathcal{M}}}
+\newcommand{\treq}[4]{\ensuremath{#1 \approx^{#4}_{#3} #2}}
+\newcommand{\classpart}{\ensuremath{\mathcal{M}}\xspace}
 \newcommand{\emptytr}{\ensuremath{\epsilon}}
-\newcommand{\obsim}{\ensuremath{\approx}\xspace}
+\newcommand{\obsim}[2]{\ensuremath{\approx^{#2}_{#1}}\xspace}
 \newcommand{\true}{\ensuremath{\mathbb{T}}}
+\newcommand{\proj}[2]{\ensuremath{#1{\downharpoonright_{#2}}}}

@@ -13,6 +13,7 @@
 \usepackage{xcolor}
 \usepackage{cmll}
 \usepackage{xspace}
+\usepackage{pifont}
 \input{macros}
 
 %%
@@ -71,49 +72,54 @@ Let O be some class defined as:
 
 \begin{definition}[Signature of a Object]
 \[
-O = \{ m_1: \vec{A_1} \to R_1 \dots  m_n: \vec{A_n} \to R_n \}
+\classpart  = \{ m_1: \vec{A_1} \to R_1 \dots  m_n: \vec{A_n} \to R_n \}
 \]
 \end{definition}
 
 \begin{definition}[Coherent Space]
-  Coherent space generated from signature $O$ is defined as
+  Coherent space generated from signature \classpart is defined as
   \begin{itemize}
-  \item $\abs{O} = \{ m_i(\vec{v}).v' | \forall i. \vec{v} \in \vec{A_i}, v' \in B_i  \}$
-    \item $ m_i(\vec{v_i}).v'_i \coherent{O} m_j(\vec{v_j}).v'_j$ \isdef $m_i(\vec{v_i}) = m_j(\vec{v_j}) \implies v'_i = v'_j $
+  \item $\abs{\classpart} = \{ m_i(\vec{v}).v' | \forall i. \vec{v} \in \vec{A_i}, v' \in B_i  \}$
+    \item $ m_i(\vec{v_i}).v'_i \coherent{\classpart} m_j(\vec{v_j}).v'_j$ \isdef $m_i(\vec{v_i}) = m_j(\vec{v_j}) \implies v'_i = v'_j $
   \end{itemize}
   
 \end{definition}
 
 
 \begin{definition}[Object Space]
-\dots
+  Given a coherent space \classpart, the object space associated with \classpart is the coherence space $\dagger \classpart$ such that
+  \begin{enumerate}
+  \item \abs{\dagger \classpart} = $\abs{\classpart}^*$
+    \item $\langle a_1, a_2 \dots a_m \rangle $ \coherent{\dagger \classpart} $\langle b_1, b_2 \dots b_n \rangle $ iff   $\forall i \in \text{min}(m, n)$.  $\langle a_1, a_2 \dots a_i \rangle $ =  $\langle b_1, b_2 \dots b_n \rangle \implies$ $a_i \coherent{\classpart} b_i$.
+  \end{enumerate}
 \end{definition}
 
-\begin{definition}[Direct Product]
-\dots
-
-\end{definition}
 
 
 \begin{definition}[Trace]
-\dots
-
+A trace $t$ of an object \classpart is a sequence of events drawn from \abs{\classpart}. In other words, $t \in \abs{\dagger \classpart}$.
 \end{definition}
 
 
-\begin{definition}[Projection]
-\dots
 
+
+
+Let $L$ and $H$ represent the partitioning of the methods such that $\classpart = L \uplus H$. Intuitively, if $\classpart = \{ l_1 \dots l_i, h_1, \dots h_j \}$,  $L = \{ l_1 \dots l_i\}$ and $H = \{ h_1 \dots h_j \}$ then an attacker representing public confidentiality level ($\bot$) can  invoke only methods from $L$ whereas a privileged principal ($\top$) can invoke either methods from either $L$ or $H$. 
+
+\begin{definition}[Direct Product]
+Let $L$ and $H$ be the coherent spaces, then the direct product $(L \directprod H)$ \dots
 \end{definition}
 
 
-Let $L$ and $H$ represent the partitioning of the methods such that $M = L \uplus H$. Intuitively, if $M = \{ l_1 \dots l_i, h_1, \dots h_j \}$,  $L = \{ l_1 \dots l_i\}$ and $H = \{ h_1 \dots h_j \}$ then an attacker representing public confidentiality level ($\bot$) can  invoke only methods from $L$ whereas a privileged principal ($\top$) can invoke either methods from either $L$ or $H$. 
+\begin{definition}[Trace Projection]
+  Let $\classpart = L \uplus H$. Given a trace $t \in \abs{\dagger (L \directprod H)}$, define projection of $t$ w.r.t $L$ as a trace  \proj{t}{L} $\in \abs{\dagger L}$.
+\end{definition}
 
 
 \begin{definition}[Pure Noninterference for a single object]\label{def:pureni}
-  Given a prefix-closed clique $V \in \dagger(L \directprod H)$, we say $L$ does not depend on (or non-interfering with respect to) $H$ if:
+  Let $\classpart = L \directprod H$. Given a prefix-closed clique $V \in \dagger(L \directprod H)$, we say $L$ does not depend on (or non-interfering with respect to) $H$ if:
   \[
-  \forall t_1, t_2 \in V. t_1 \downharpoonright L =  t_2 \downharpoonright L \implies \forall e \in \abs{L}. t_1  \tracecat e \in V \iff t_2 \tracecat e \in V
+  \forall t_1, t_2 \in V. \proj{t_1}{ L} =  \proj{t_2}{L} \implies \forall e \in \abs{L}. t_1  \tracecat e \in V \iff t_2 \tracecat e \in V
   \]
 \end{definition}
 
@@ -163,61 +169,79 @@ Note that with this partitioning, the $\bot$ attacker can invoke methods from bo
 
 Given a class definition \classpart, define \emph{trace equivalence} of traces $t_1$ and $t_2$ with respect to a principal $\ell$ as follows:
 \[
-\treq{t_1}{t_2}{\ell}{\classpart} \isdef \ob{t_1}{\classpart}{\ell} \obsim \ob{t_2}{\classpart}{\ell}
+\treq{t_1}{t_2}{L}{\classpart} \isdef \ob{t_1}{\classpart}{\ell} \obsim{L}{\classpart} \ob{t_2}{\classpart}{\ell}
 \]
 Trace equivalence captures the  observational equivalence using the \emph{observation function}, \func{\obsymbol_{\classpart}}{E \times P}{E}, a function from the set of events and  principals to the set of events.
 The function is parameterized by security specification of the class that describes the input/output security levels of the methods belonging to the class \classpart.
 The observation function is lifted to traces in a straightforward manner.
 
 
-The observation function is quite expressive: it could even specify declassification events as shown in the example below.
 
-\begin{example}[Simple Observation Function]
+\begin{example}[Identity as Observation Function]
   Let $O$ be the class from Example \ref{ex1} such that  $L = \emptyset $, $D = \{ \mycode{avgSalary} \}$ and $H = \{\mycode{getSalary}, \mycode{putSalary} \}$.
   Note that \mycode{avgSalary} is a declassification event since there is a flow of information from 
   \[
   \ob{e}{O}{L} \isdef \begin{cases}
-    e \mbox{ if } e \in \classpart.L \\
-    1 \mbox{ if } e \in \classpart.D \\
-    \emptytr \mbox{ if } e \in \classpart.H
+    v' \mbox{ if } e = m_i(\vec{v}).v' \in \abs{\classpart.L \directprod \classpart.D} \\
+    \emptytr \mbox{ if } e \in \abs{\classpart.H}
+  \end{cases}
+  \]
+\end{example}
+
+The observation function is quite expressive: it could even specify declassification events as shown in the example below.
+
+\begin{example}[Expressive  Observation Function]
+  Let $O$ be the class from Example \ref{ex1} such that  $L = \emptyset $, $D = \{ \mycode{avgSalary} \}$ and $H = \{\mycode{getSalary}, \mycode{putSalary} \}$.
+  Note that \mycode{avgSalary} is a declassification event since there is a flow of information from 
+  \[
+  \ob{e}{O}{L} \isdef \begin{cases}
+    v' \mbox{ if } e = m_i(\vec{v}).v' \in \abs{\classpart.L} \\
+    1 \mbox{ if } e \in \abs{\classpart.D} \\
+    \emptytr \mbox{ if } e \in \abs{\classpart.H}
   \end{cases}
   \]
   The function overwrites the output of $e$ with $1$ making it effectively a constant function.
 \end{example}
 
-The relation, \obsim, between two observations is user defined. If \obsim is strict equality then it is  restrictive. However, one could use other notions of similarity to permit information downgrading.
+The relation, \obsim{\ell}{\classpart}, between two observations is user defined. If \obsim{\ell}{\classpart} is strict equality then it is  restrictive. However, one could use other notions of similarity to permit information downgrading.
 
 \begin{example}[Simple Observational Equivalence]
   \[
-  \ob{e_1}{\classpart}{L} \obsim \ob{e_2}{\classpart}{L} \isdef \begin{cases}
-    \ob{e_1}{\classpart}{L} = \ob{e_2}{\classpart}{L} &\mbox{ if } e_1, e_2 \in \classpart.L \\
-    \emptytr &\mbox{ o.w }
+  \ob{e_1}{\classpart}{L} \obsim{L}{\classpart} \ob{e_2}{\classpart}{L} \isdef \begin{cases}
+    \ob{e_1}{\classpart}{L} = \ob{e_2}{\classpart}{L} &\mbox{ if } e_1, e_2 \in \abs{\classpart.L} \\
+    \true &\mbox{ o.w }
   \end{cases}
   \]
-  That is, it ignores the declassified and high events. For example, using the above definition, we have $\ob{\mycode{putSalary}().5000}{\classpart}{L} \obsim \ob{\mycode{putSalary}().6000}{\classpart}{L}$.
+  That is, it ignores the declassified and high events. For example, using the above definition, we have $\ob{\mycode{putSalary}().5000}{\classpart}{L} \obsim{L}{\classpart} \ob{\mycode{putSalary}().6000}{\classpart}{L}$.
 \end{example}
 
 \begin{example}[Complex Observational Equivalence]
   \[
-  \ob{e_1}{\classpart}{L} \obsim \ob{e_2}{\classpart}{L} \isdef \begin{cases}
-    \ob{e_1}{\classpart}{L} = \ob{e_2}{\classpart}{L} &\mbox{ if } e_1, e_2 \in \classpart.L \\
-    \ob{e_1}{\classpart}{L} = \ob{e_2}{\classpart}{L} &\mbox{ if } e_1, e_2 \in \classpart.D \text{ and} \\
+  \ob{e_1}{\classpart}{L} \obsim{L}{\classpart} \ob{e_2}{\classpart}{L} \isdef \begin{cases}
+    \ob{e_1}{\classpart}{L} = \ob{e_2}{\classpart}{L} &\mbox{ if } e_1, e_2 \in \abs{\classpart.L} \\
+    \ob{e_1}{\classpart}{L} = \ob{e_2}{\classpart}{L} &\mbox{ if } e_1, e_2 \in \abs{\classpart.D} \text{ and} \\
      &\mbox{ } \exists i \in \{1, 2\}, \ob{e_i}{\classpart}{L} < 10K \\
     \true &\mbox{ o.w }
   \end{cases}
   \]
   That is, it ignores the declassified events only if the average salary is greater than 10K, otherwise the declassified events have to be exactly the same in both the events.
-  For example, using the above definition, we have $\ob{\mycode{putSalary}().5000}{\classpart}{L} \not \obsim \ob{\mycode{putSalary}().6000}{\classpart}{L}$ since the results are different and less than 10K.
+  For example, using the above definition, we have $\ob{\mycode{putSalary}().5000}{\classpart}{L} \not \obsim{L}{\classpart} \ob{\mycode{putSalary}().6000}{\classpart}{L}$ since the results are different and less than 10K.
 \end{example}
 
 
 \begin{definition}[Relaxed Noninterference for a single object]\label{def:relaxni}
-  Given a prefix-closed clique $V \in \dagger(L \directprod H)$, we say $L$ does not depend on (or non-interfering with respect to) $H$ if:
-  \[
-  \forall t_1, t_2 \in V. \treq{t_1}{t_2}{\ell}{\classpart}  \implies \forall e \in \abs{L}. t_1  \tracecat e \in V \iff t_2 \tracecat e \in V
-  \]
+   Let $\classpart = (L \directprod D \directprod H)$. Given a prefix-closed clique $V \in \dagger(L \directprod D \directprod H)$, we define noninterference of $L$ w.r.t $H$ if:
+  \begin{align*}
+   & 1. \forall t_1, t_2 \in V. \treq{t_1}{t_2}{L}{\classpart}  \implies \forall e \in \abs{L}. t_1  \tracecat e \in V \iff t_2 \tracecat e \in V  \\
+   & 2. \forall t_1, t_2 \in V. \treq{t_1}{t_2}{L}{\classpart}  \implies \forall m(\vec{v}).v_i \in \abs{D}. \treq{t_1  \tracecat  m(\vec{v}).v_1}{t_2 \tracecat  m(\vec{v}).v_2}{L}{\classpart} \text{  \textcolor{red}{(in progress)}}
+  \end{align*}
 \end{definition}
 
+The first requirements ensures that all public events match exactly.
+The condition $\forall m(\vec{v}).v_i \in \abs{L \directprod D}$ in the second requirement ensures that the declassification event has the same inputs but may have different outputs.
+
+Definition~\ref{def:relaxni} can admit declassification events. For example, if $t_1 = \mycode{putSalary}(1, 5000)$ and  $t_1 = \mycode{putSalary}(1, 6000)$, then we have that \treq{t_1}{t_2}{L}{\classpart}.
+However, if $m().v_1=\mycode{avgSalary}().5000$ and  $m().v_2 = \mycode{avgSalary}().6000$, then \treq{t_1  \tracecat  m(\vec{v}).v_1}{t_2 \tracecat  m(\vec{v}).v_2}{L}{\classpart} satisfying Definition~\ref{def:relaxni}.
 
 
 \begin{definition}[Noninterference for multiple objects]\label{def:ni2}
