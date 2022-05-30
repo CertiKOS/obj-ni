@@ -119,7 +119,7 @@ Let $L$ and $H$ be the coherent spaces, then the direct product $(L \directprod 
 \begin{definition}[Pure Noninterference for a single object]\label{def:pureni}
   Let $\classpart = L \directprod H$. Given a prefix-closed clique $V \in \dagger(L \directprod H)$, we say $L$ does not depend on (or non-interfering with respect to) $H$ if:
   \[
-  \forall t_1, t_2 \in V. \proj{t_1}{ L} =  \proj{t_2}{L} \implies \forall e \in \abs{L}. t_1  \tracecat e \in V \iff t_2 \tracecat e \in V
+  \forall t_1, t_2 \in V. \proj{t_1}{ L} =  \proj{t_2}{L} \implies \forall e \in \abs{L}. t_1  \tracecat e \in V \iff t_2 \tracecat e \in V \text{ \textcolor{red}{(must $e$ be exactly the same in both traces?)}}
   \]
 \end{definition}
 
@@ -167,67 +167,68 @@ We relax Definition \ref{def:pureni} to include observational equivalence  than 
 We also introduce a new partition class $D$, to represent methods that declassify information. Thus, $L$, $D$ and $H$ represent the partitioning of the methods such that $\classpart = L \uplus D \uplus H$.
 Note that with this partitioning, the $\bot$ attacker can invoke methods from both $L$ and $D$ but not from $H$.
 
-Given a class definition \classpart, define \emph{trace equivalence} of traces $t_1$ and $t_2$ with respect to a principal $\ell$ as follows:
-\[
-\treq{t_1}{t_2}{L}{\classpart} \isdef \ob{t_1}{\classpart}{\ell} \obsim{L}{\classpart} \ob{t_2}{\classpart}{\ell}
-\]
-Trace equivalence captures the  observational equivalence using the \emph{observation function}, \func{\obsymbol_{\classpart}}{E \times P}{E}, a function from the set of events and  principals to the set of events.
+%% \medskip
+%% Given a class definition \classpart, define \emph{trace equivalence} of traces $t_1$ and $t_2$ with respect to a principal $\ell$ as follows:
+%% \[
+%% \treq{t_1}{t_2}{\ell}{\classpart} \isdef \ob{t_1}{\classpart}{\ell} \obsim{\ell}{\classpart} \ob{t_2}{\classpart}{\ell}
+%% \]
+%% Trace equivalence captures the  observational equivalence using the
+
+
+The \emph{observation function}, \func{\obsymbol_{\classpart}}{\mathcal{T} \times \mathcal{P}}{\obsset}, a function from the set of traces  and  principals to the set of observations.
 The function is parameterized by security specification of the class that describes the input/output security levels of the methods belonging to the class \classpart.
-The observation function is lifted to traces in a straightforward manner.
 
 
 
-\begin{example}[Identity as Observation Function]
+
+\begin{example}[Identity as Observation Function] \label{ex2}
   Let $O$ be the class from Example \ref{ex1} such that  $L = \emptyset $, $D = \{ \mycode{avgSalary} \}$ and $H = \{\mycode{getSalary}, \mycode{putSalary} \}$.
   Note that \mycode{avgSalary} is a declassification event since there is a flow of information from 
   \[
   \ob{e}{O}{L} \isdef \begin{cases}
-    v' \mbox{ if } e = m_i(\vec{v}).v' \in \abs{\classpart.L \directprod \classpart.D} \\
-    \emptytr \mbox{ if } e \in \abs{\classpart.H}
+    v'  & \mbox{ if } e = m_i(\vec{v}).v' \in \abs{\classpart.L \directprod \classpart.D} \\
+    \emptytr & \mbox{ if } e \in \abs{\classpart.H}
   \end{cases}
   \]
 \end{example}
 
-The observation function is quite expressive: it could even specify declassification events as shown in the example below.
 
-\begin{example}[Expressive  Observation Function]
+
+\begin{example}[Summation as Observation Function]  \label{ex3}
   Let $O$ be the class from Example \ref{ex1} such that  $L = \emptyset $, $D = \{ \mycode{avgSalary} \}$ and $H = \{\mycode{getSalary}, \mycode{putSalary} \}$.
   Note that \mycode{avgSalary} is a declassification event since there is a flow of information from 
   \[
-  \ob{e}{O}{L} \isdef \begin{cases}
-    v' \mbox{ if } e = m_i(\vec{v}).v' \in \abs{\classpart.L} \\
-    1 \mbox{ if } e \in \abs{\classpart.D} \\
-    \emptytr \mbox{ if } e \in \abs{\classpart.H}
+  \ob{e \tracecat t }{O}{L} \isdef \begin{cases}
+    s + \ob{t}{O}{L}  & \mbox{ if } e = \mycode{putSalary(eid, s).0} \\
+    0 & \mbox{ if } t = \epsilon \\
+    \ob{t}{O}{L} & \mbox{ o.w } 
   \end{cases}
   \]
-  The function overwrites the output of $e$ with $1$ making it effectively a constant function.
 \end{example}
 
-The relation, \obsim{\ell}{\classpart}, between two observations is user defined. If \obsim{\ell}{\classpart} is strict equality then it is  restrictive. However, one could use other notions of similarity to permit information downgrading.
+%% The observation function is quite expressive: it can encode the attacker's knowledge as show below.
 
-\begin{example}[Simple Observational Equivalence]
-  \[
-  \ob{e_1}{\classpart}{L} \obsim{L}{\classpart} \ob{e_2}{\classpart}{L} \isdef \begin{cases}
-    \ob{e_1}{\classpart}{L} = \ob{e_2}{\classpart}{L} &\mbox{ if } e_1, e_2 \in \abs{\classpart.L} \\
-    \true &\mbox{ o.w }
-  \end{cases}
-  \]
-  That is, it ignores the declassified and high events. For example, using the above definition, we have $\ob{\mycode{putSalary}().5000}{\classpart}{L} \obsim{L}{\classpart} \ob{\mycode{putSalary}().6000}{\classpart}{L}$.
-\end{example}
+%% \begin{example}[Expressive  Observation Function] \label{ex4}
+%%   Let $O$ be the class from Example \ref{ex1} such that  $L = \emptyset $, $D = \{ \mycode{avgSalary} \}$ and $H = \{\mycode{getSalary}, \mycode{putSalary} \}$.
+%%   Note that \mycode{avgSalary} is a declassification event since there is a flow of information from 
+%%   \[
+%%   \ob{e}{O}{L} \isdef \begin{cases}
+%%     v' \mbox{ if } e = m_i(\vec{v}).v' \in \abs{\classpart.L} \\
+%%     1 \mbox{ if } e \in \abs{\classpart.D} \\
+%%     \emptytr \mbox{ if } e \in \abs{\classpart.H}
+%%   \end{cases}
+%%   \]
+%%   The function overwrites the output of $e$ with $1$ making it effectively a constant function.
+%% \end{example}
 
-\begin{example}[Complex Observational Equivalence]
-  \[
-  \ob{e_1}{\classpart}{L} \obsim{L}{\classpart} \ob{e_2}{\classpart}{L} \isdef \begin{cases}
-    \ob{e_1}{\classpart}{L} = \ob{e_2}{\classpart}{L} &\mbox{ if } e_1, e_2 \in \abs{\classpart.L} \\
-    \ob{e_1}{\classpart}{L} = \ob{e_2}{\classpart}{L} &\mbox{ if } e_1, e_2 \in \abs{\classpart.D} \text{ and} \\
-     &\mbox{ } \exists i \in \{1, 2\}, \ob{e_i}{\classpart}{L} < 10K \\
-    \true &\mbox{ o.w }
-  \end{cases}
-  \]
-  That is, it ignores the declassified events only if the average salary is greater than 10K, otherwise the declassified events have to be exactly the same in both the events.
-  For example, using the above definition, we have $\ob{\mycode{putSalary}().5000}{\classpart}{L} \not \obsim{L}{\classpart} \ob{\mycode{putSalary}().6000}{\classpart}{L}$ since the results are different and less than 10K.
-\end{example}
+\begin{definition}[Observational Equivalence \obsim{\ell}{\classpart} ]\label{def:obsim}
+Given an object specification \classpart and an observation function \obsymbol,  two traces, $t_1$ and $t_2$ are observationally equivalent w.r.t a principal $\ell$, denoted $t_1 \obsim{\ell}{\classpart} t_2$, if \ob{t_1}{\classpart}{\ell} =  \ob{t_2}{\classpart}{\ell}.
+\end{definition}
 
+
+\textbf{Using the \obsymbol function from Example~\ref{ex3}: }
+If $t_1 = \mycode{putSalary}(1, 2000) \tracecat \mycode{putSalary}(1, 3000)$ and  $t_2 = \mycode{putSalary}(1, 4000) \tracecat \mycode{putSalary}(1, 1000)$, then \treq{t_1}{t_2}{L}{\classpart}.
+However, if $t_1 = \mycode{putSalary}(1, 5000)$ and  $t_2 = \mycode{putSalary}(1, 6000)$, then   \trneq{t_1}{t_2}{L}{\classpart}.
 
 \begin{definition}[Relaxed Noninterference for a single object]\label{def:relaxni}
    Let $\classpart = (L \directprod D \directprod H)$. Given a prefix-closed clique $V \in \dagger(L \directprod D \directprod H)$, we define noninterference of $L$ w.r.t $H$ if:
@@ -240,8 +241,13 @@ The relation, \obsim{\ell}{\classpart}, between two observations is user defined
 The first requirements ensures that all public events match exactly.
 The condition $\forall m(\vec{v}).v_i \in \abs{L \directprod D}$ in the second requirement ensures that the declassification event has the same inputs but may have different outputs.
 
-Definition~\ref{def:relaxni} can admit declassification events. For example, if $t_1 = \mycode{putSalary}(1, 5000)$ and  $t_1 = \mycode{putSalary}(1, 6000)$, then we have that \treq{t_1}{t_2}{L}{\classpart}.
-However, if $m().v_1=\mycode{avgSalary}().5000$ and  $m().v_2 = \mycode{avgSalary}().6000$, then \treq{t_1  \tracecat  m(\vec{v}).v_1}{t_2 \tracecat  m(\vec{v}).v_2}{L}{\classpart} satisfying Definition~\ref{def:relaxni}.
+
+Definition~\ref{def:relaxni} can admit declassification events. For example, if $t_1 = \mycode{putSalary}(1, 2000) \tracecat \mycode{putSalary}(1, 3000)$ and  $t_2 = \mycode{putSalary}(1, 4000) \tracecat \mycode{putSalary}(1, 1000)$, then we have that \treq{t_1}{t_2}{L}{\classpart}.
+If $m().v=\mycode{avgSalary}().5000$ then we also have that \treq{t_1  \tracecat  m().v}{t_2 \tracecat  m().v}{L}{\classpart} satisfying Definition~\ref{def:relaxni}.
+
+\medskip
+%%Definition~\ref{def:relaxni} can admit declassification events. For example,
+%% $m().v_1=\mycode{avgSalary}().5000$ and  $m().v_2 = \mycode{avgSalary}().6000$, then \treq{t_1  \tracecat  m(\vec{v}).v_1}{t_2 \tracecat  m(\vec{v}).v_2}{L}{\classpart} satisfying Definition~\ref{def:relaxni}.
 
 
 \begin{definition}[Noninterference for multiple objects]\label{def:ni2}
