@@ -227,14 +227,16 @@ Given an object specification \classpart and an observation function \obsymbol, 
 
 
 \textbf{Using the \obsymbol function from Example~\ref{ex3}: }
-If $t_1 = \mycode{putSalary}(1, 2000) \tracecat \mycode{putSalary}(1, 3000)$ and  $t_2 = \mycode{putSalary}(1, 4000) \tracecat \mycode{putSalary}(1, 1000)$, then \treq{t_1}{t_2}{L}{\classpart}.
+If $t_1 = \mycode{putSalary}(1, 2000) \tracecat \mycode{putSalary}(2, 3000)$ and  $t_2 = \mycode{putSalary}(1, 4000) \tracecat \mycode{putSalary}(2, 1000)$, then \treq{t_1}{t_2}{L}{\classpart}.
 However, if $t_1 = \mycode{putSalary}(1, 5000)$ and  $t_2 = \mycode{putSalary}(1, 6000)$, then   \trneq{t_1}{t_2}{L}{\classpart}.
 
+{
+\color{red}
 \begin{definition}[Relaxed Noninterference for a single object]\label{def:relaxni}
    Let $\classpart = (L \directprod D \directprod H)$. Given a prefix-closed clique $V \in \dagger(L \directprod D \directprod H)$, we define noninterference of $L$ w.r.t $H$ if:
   \begin{align*}
    & 1. \forall t_1, t_2 \in V. \treq{t_1}{t_2}{L}{\classpart}  \implies \forall e \in \abs{L}. t_1  \tracecat e \in V \iff t_2 \tracecat e \in V  \\
-   & 2. \forall t_1, t_2 \in V. \treq{t_1}{t_2}{L}{\classpart}  \implies \forall m(\vec{v}).v_i \in \abs{D}. \treq{t_1  \tracecat  m(\vec{v}).v_1}{t_2 \tracecat  m(\vec{v}).v_2}{L}{\classpart} \text{  \textcolor{red}{(in progress)}}
+   & 2. \forall t_1, t_2 \in V. \treq{t_1}{t_2}{L}{\classpart}  \implies \forall m(\vec{v}).v_i \in \abs{D}. \treq{t_1  \tracecat  m(\vec{v}).v_1}{t_2 \tracecat  m(\vec{v}).v_2}{L}{\classpart}
   \end{align*}
 \end{definition}
 
@@ -244,10 +246,15 @@ The condition $\forall m(\vec{v}).v_i \in \abs{L \directprod D}$ in the second r
 
 Definition~\ref{def:relaxni} can admit declassification events. For example, if $t_1 = \mycode{putSalary}(1, 2000) \tracecat \mycode{putSalary}(1, 3000)$ and  $t_2 = \mycode{putSalary}(1, 4000) \tracecat \mycode{putSalary}(1, 1000)$, then we have that \treq{t_1}{t_2}{L}{\classpart}.
 If $m().v=\mycode{avgSalary}().5000$ then we also have that \treq{t_1  \tracecat  m().v}{t_2 \tracecat  m().v}{L}{\classpart} satisfying Definition~\ref{def:relaxni}.
+}
 
 \medskip
-%%Definition~\ref{def:relaxni} can admit declassification events. For example,
-%% $m().v_1=\mycode{avgSalary}().5000$ and  $m().v_2 = \mycode{avgSalary}().6000$, then \treq{t_1  \tracecat  m(\vec{v}).v_1}{t_2 \tracecat  m(\vec{v}).v_2}{L}{\classpart} satisfying Definition~\ref{def:relaxni}.
+\begin{definition}[Relaxed Noninterference for a single object]\label{def:relaxninew}
+   Let $\classpart = (L \directprod D \directprod H)$. Given a prefix-closed clique $V \in \dagger(L \directprod D \directprod H)$, we define noninterference of $L$ w.r.t $H$ if:
+   \[
+   \forall t_1, t_2 \in V. \treq{t_1}{t_2}{L}{\classpart}  \implies \forall e_1, e_2 \in V. \treq{t_1  \tracecat  e_1}{t_2 \tracecat  e_2}{L}{\classpart}
+   \]
+\end{definition}
 
 
 \begin{definition}[Noninterference for multiple objects]\label{def:ni2}
