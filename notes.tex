@@ -195,8 +195,9 @@ The function is parameterized by security specification of the class that descri
 
 
 \begin{example}[Summation as Observation Function]  \label{ex3}
-  Let $O$ be the class from Example \ref{ex1} such that  $L = \emptyset $, $D = \{ \mycode{avgSalary} \}$ and $H = \{\mycode{getSalary}, \mycode{putSalary} \}$.
-  Note that \mycode{avgSalary} is a declassification event since there is a flow of information from 
+  Let $O$ be the class from Example \ref{ex1}.
+  %% such that  $L = \emptyset $, $D = \{ \mycode{avgSalary} \}$ and $H = \{\mycode{getSalary}, \mycode{putSalary} \}$.
+  %% Note that \mycode{avgSalary} is a declassification event since there is a flow of information from 
   \[
   \ob{e \tracecat t }{O}{L} \isdef \begin{cases}
     s + \ob{t}{O}{L}  & \mbox{ if } e = \mycode{putSalary(eid, s).0} \\
@@ -230,9 +231,8 @@ Given an object specification \classpart and an observation function \obsymbol, 
 If $t_1 = \mycode{putSalary}(1, 2000) \tracecat \mycode{putSalary}(2, 3000)$ and  $t_2 = \mycode{putSalary}(1, 4000) \tracecat \mycode{putSalary}(2, 1000)$, then \treq{t_1}{t_2}{L}{\classpart}.
 However, if $t_1 = \mycode{putSalary}(1, 5000)$ and  $t_2 = \mycode{putSalary}(1, 6000)$, then   \trneq{t_1}{t_2}{L}{\classpart}.
 
-{
-\color{red}
-\begin{definition}[Relaxed Noninterference for a single object]\label{def:relaxni}
+
+\begin{definition}[\textcolor{red}{(DEPRECATED)} Relaxed Noninterference for a single object]\label{def:relaxni}
    Let $\classpart = (L \directprod D \directprod H)$. Given a prefix-closed clique $V \in \dagger(L \directprod D \directprod H)$, we define noninterference of $L$ w.r.t $H$ if:
   \begin{align*}
    & 1. \forall t_1, t_2 \in V. \treq{t_1}{t_2}{L}{\classpart}  \implies \forall e \in \abs{L}. t_1  \tracecat e \in V \iff t_2 \tracecat e \in V  \\
@@ -240,22 +240,29 @@ However, if $t_1 = \mycode{putSalary}(1, 5000)$ and  $t_2 = \mycode{putSalary}(1
   \end{align*}
 \end{definition}
 
-The first requirements ensures that all public events match exactly.
-The condition $\forall m(\vec{v}).v_i \in \abs{L \directprod D}$ in the second requirement ensures that the declassification event has the same inputs but may have different outputs.
+%% The first requirements ensures that all public events match exactly.
+%% The condition $\forall m(\vec{v}).v_i \in \abs{L \directprod D}$ in the second requirement ensures that the declassification event has the same inputs but may have different outputs.
 
 
-Definition~\ref{def:relaxni} can admit declassification events. For example, if $t_1 = \mycode{putSalary}(1, 2000) \tracecat \mycode{putSalary}(1, 3000)$ and  $t_2 = \mycode{putSalary}(1, 4000) \tracecat \mycode{putSalary}(1, 1000)$, then we have that \treq{t_1}{t_2}{L}{\classpart}.
-If $m().v=\mycode{avgSalary}().5000$ then we also have that \treq{t_1  \tracecat  m().v}{t_2 \tracecat  m().v}{L}{\classpart} satisfying Definition~\ref{def:relaxni}.
-}
+%% Definition~\ref{def:relaxni} can admit declassification events. For example, if $t_1 = \mycode{putSalary}(1, 2000) \tracecat \mycode{putSalary}(1, 3000)$ and  $t_2 = \mycode{putSalary}(1, 4000) \tracecat \mycode{putSalary}(1, 1000)$, then we have that \treq{t_1}{t_2}{L}{\classpart}.
+%% If $m().v=\mycode{avgSalary}().5000$ then we also have that \treq{t_1  \tracecat  m().v}{t_2 \tracecat  m().v}{L}{\classpart} satisfying Definition~\ref{def:relaxni}.
+
 
 \medskip
+    {
+      \color{blue}
 \begin{definition}[Relaxed Noninterference for a single object]\label{def:relaxninew}
    Let $\classpart = (L \directprod D \directprod H)$. Given a prefix-closed clique $V \in \dagger(L \directprod D \directprod H)$, we define noninterference of $L$ w.r.t $H$ if:
-   \[
-   \forall t_1, t_2 \in V. \treq{t_1}{t_2}{L}{\classpart}  \implies \forall e_1, e_2 \in V. \treq{t_1  \tracecat  e_1}{t_2 \tracecat  e_2}{L}{\classpart}
-   \]
+   \begin{align*}
+     & 1. \forall t_1, t_2 \in V \text{ and }  e \in \abs{L \directprod D}. \treq{t_1}{t_2}{L}{\classpart}  \wedge t_1 \tracecat e \in V \wedge t_2 \tracecat  e \in V \implies \treq{t_1  \tracecat  e}{t_2 \tracecat  e}{L}{\classpart} \\
+     & 2. \forall t_1, t_2 \in V \text{ and }  e_1, e_2 \in \abs{H}. \treq{t_1}{t_2}{L}{\classpart}  \wedge t_1 \tracecat e_1 \in V \wedge t_2 \tracecat  e_2 \in V \implies \treq{t_1  \tracecat  e_1}{t_2 \tracecat  e_2}{L}{\classpart}
+   \end{align*}
 \end{definition}
+}
 
+    
+\clearpage
+\section{NI for Multiple Objects}
 
 \begin{definition}[Noninterference for multiple objects]\label{def:ni2}
 
